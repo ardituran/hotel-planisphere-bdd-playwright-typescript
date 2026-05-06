@@ -1,0 +1,33 @@
+# ==========================================
+# 1. Dependency Folders
+# ==========================================
+# Ignore node_modules because it is too big. 
+# Other QA can download it using 'npm install'.
+node_modules/
+
+# ==========================================
+# 2. Environment Variables (SECRETS)
+# ==========================================
+# NEVER upload your real password! 
+# We only upload .env.template as an example.
+.env
+
+# ==========================================
+# 3. Playwright & BDD Generated Files
+# ==========================================
+# Ignore test reports and trace files because 
+# they are generated every time we run a test.
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Ignore auto-generated BDD files
+.features-gen/
+
+# ==========================================
+# 4. OS / System Files
+# ==========================================
+# Ignore Mac/Windows system hidden files
+.DS_Store
+Thumbs.db

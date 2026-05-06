@@ -1,0 +1,31 @@
+{
+  "name": "hotel-automation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npx bddgen && npx playwright test --project=chromium",
+    "test:ui": "npx bddgen && npx playwright test --project=chromium --ui",
+    "test:headed": "npx bddgen && npx playwright test --project=chromium --headed",
+    "test:focus": "npx bddgen && npx playwright test --project=chromium -g"
+  },
+  "keywords": [
+    "playwright",
+    "bdd",
+    "automation",
+    "qa"
+  ],
+  "author": "Idris Ardi",
+  "license": "ISC",
+  "description": "E2E Automation for Hotel Planisphere using Playwright and BDD",
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "@playwright/test": "^1.59.1",
+    "playwright-bdd": "^8.5.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}
