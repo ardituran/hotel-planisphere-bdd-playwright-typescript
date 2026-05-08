@@ -1,33 +1,48 @@
-# Hotel Automation E2E Testing
+# Hotel Planisphere BDD Automation (Playwright & TypeScript)
 
-An End-to-End (E2E) testing project for a Hotel website, built with **Playwright**, **TypeScript**, and **BDD (Behavior Driven Development)**. This project is designed to help QA Engineers learn automation testing through practical implementation.
+This repository contains an End-to-End (E2E) Test Automation Framework for the Hotel Planisphere website. It is built using Playwright, TypeScript, and Cucumber BDD (via `playwright-bdd`).
+
+The primary goal of this project is to provide a robust, scalable, and easy-to-read automation suite that serves as a practical learning resource for QA Engineers and a professional portfolio piece.
+
+---
+
+## Technical Stack
+
+| Role | Tool |
+|---|---|
+| Logic | [Playwright](https://playwright.dev/) |
+| Language | [TypeScript](https://www.typescriptlang.org/) |
+| Framework | [playwright-bdd](https://vitalets.github.io/playwright-bdd/) |
+| Data Generation | [faker-js](https://fakerjs.dev/) |
+| Environment Management | [dotenv](https://www.npmjs.com/package/dotenv) |
 
 ---
 
 ## Prerequisites
 
-Before you start, make sure you have the following installed:
+Ensure you have the following installed on your local machine:
 
-- [Node.js](https://nodejs.org/)
-- An IDE (e.g., [Visual Studio Code](https://code.visualstudio.com/) or [Cursor](https://www.cursor.com/))
+- **Node.js** (Version 16 or higher recommended)
+- **Visual Studio Code** or **Cursor** (Recommended IDE)
+- **Git** (For version control)
 
 ---
 
 ## Installation
 
-### 1. Install Dependencies
+### 1. Clone and Install
 
-Open your terminal and run:
+First, clone this repository to your local machine, then navigate to the project folder and install the dependencies:
 
 ```bash
 npm install
 ```
 
-### 2. Setup Environment Variables
+### 2. Configure Environment Variables
 
-You need a `.env` file to store sensitive credentials such as email and password.
+This project uses a `.env` file to manage sensitive credentials safely. Follow the instructions based on your operating system to create the file from the provided template:
 
-**Mac / Linux:**
+**Mac or Linux:**
 
 ```bash
 cp .env.template .env
@@ -39,7 +54,17 @@ cp .env.template .env
 copy .env.template .env
 ```
 
-After copying, open the `.env` file and replace the placeholder values with the real credentials for the preset users.
+After creating the file, open `.env` and fill in the values for `PRESET_PREMIUM_EMAIL`, `PRESET_PREMIUM_PASSWORD`, etc., with valid credentials.
+
+---
+
+## Project Structure & Architecture
+
+To ensure high maintainability and readability, the project follows these design patterns:
+
+- **Behavior Driven Development (BDD)** — Scenarios are written in plain English using Gherkin syntax (`Given`, `When`, `Then`) inside `.feature` files.
+- **Page Object Model (POM)** — UI elements and page actions are encapsulated within specific Page Classes to separate logic from test scripts.
+- **Smart Data Factory** — A centralized `DataHelper.ts` handles complex business rules and generates random, valid test data dynamically.
 
 ---
 
@@ -47,57 +72,47 @@ After copying, open the `.env` file and replace the placeholder values with the 
 
 | Command | Description |
 |---|---|
-| `npm run test` | Run all tests in headless mode (background) |
-| `npm run test:headed` | Run all tests with browser visible (headed mode) |
-| `npm run test:focus -- "@auth"` | Run tests by tag (e.g., `@login`, `@signup`, `@delete`) |
-| `npm run test:focus -- "For honeymoon"` | Run a specific test by scenario name |
-
-**Examples:**
-
-```bash
-# Run all tests (headless)
-npm run test
-
-# Run all tests with browser visible
-npm run test:headed
-
-# Run by tag
-npm run test:focus -- "@auth"
-
-# Run by scenario name
-npm run test:focus -- "For honeymoon"
-```
+| `npm run test` | Run all tests in headless mode (background). |
+| `npm run test:headed` | Run all tests with the browser visible. |
+| `npm run test:focus -- "@auth"` | Run specific tests using tags (e.g., `@auth`, `@member`). |
+| `npm run test:focus -- "For honeymoon"` | Run a specific test by its scenario name. |
 
 ---
 
-## Features
+## Key Features
 
-- **BDD Framework** — Test scenarios are written in plain English using `Given`, `When`, `Then` format inside `.feature` files.
-- **Page Object Model (POM)** — Web elements (buttons, inputs, etc.) are separated from test scripts for cleaner, more maintainable code.
-- **Dynamic Fake Data** — Uses `faker-js` to auto-generate random names, emails, addresses, and birth dates in correct HTML5 format.
-- **Authentication Scenarios** — Covers Sign Up, Login, Logout, and Delete Account, including fixes for URL redirect collisions and UI flickering.
-- **Native Browser Pop-up Handler** — Automatically handles system alerts (e.g., "OK" dialog) during account deletion.
-- **Guest Reservation Scenarios** — Automates room bookings for all 7 hotel plans with rule enforcement per room type (e.g., max 5-night stay for "Complimentary Ticket" room).
+- **Membership Scenarios** — Automates specific reservation flows for Guest, Normal Member, and Premium Member accounts.
+- **Business Rule Enforcement** — Dynamically applies hotel constraints (e.g., Max Stay, Min/Max Guests) per room plan using a custom logic handler.
+- **Session Management** — Implemented "Smart Logout" which clears cookies and reloads the page to prevent session flickering and race conditions.
+- **Pop-up Handling** — Automated handling of native browser dialogs (Confirm/Alert) during account deletion.
+- **Resilient Selectors** — Uses a combination of Role-based and CSS selectors for high reliability against UI changes.
 
 ---
 
-## Roadmap
+## Roadmap & Future Enhancements
 
-- [ ] Create reservation scenarios for **Premium Membership** users across all hotel plans
-- [ ] Create reservation scenarios for **Normal Membership** users across all hotel plans
+- **User Data Logging** — Automatically log newly registered users into a local file (CSV or TXT) using Node.js `fs` for easy auditing.
+- **Advanced Reporting** — We plan to enhance the reporting system through three levels:
+  - **Level 1 (Playwright Native)** — Enable Video and Screenshot attachments for failed tests to assist in debugging.
+  - **Level 2 (Allure Report)** — Implement a professional dashboard with visual charts and trends for stakeholders.
+  - **Level 3 (Monocart/Custom)** — Integrate modern reporting alternatives for better trace integration.
 
 ---
 
 ## Version History
 
-### v1.0.0 — May 6, 2026, 22:00 WIB
+### v1.1.0 — May 8, 2026
+
+- Added comprehensive Reservation scenarios for Premium and Normal Membership levels.
+- Included logic for 3 new plans: Premium, With Dinner, and Economical.
+- Implemented "Smart Login" logic to handle both preset and newly created members.
+- Enhanced `DataHelper.ts` with date-offset logic (H+1) to avoid same-day booking errors.
+
+### v1.0.0 — May 6, 2026
 
 **Initial Release**
 
-- Setup Playwright, BDD, and dotenv
-- Create `DataHelper.ts` for fake data generation
-- Create `auth.feature` and `reservation.feature`
-- Create POM and Step Definitions for Authentication and Reservation
-- Fix timeout error on Date input (Malformed value)
-- Fix race condition error on Logout and Login process
-- Fix max stay limit for specific hotel plans
+- Setup basic Playwright + BDD infrastructure.
+- Automated Authentication (Sign Up, Login, Logout, Delete).
+- Resolved race conditions during navigation and UI flickering on Logout.
+- Created initial reservation workflow for Guest users.

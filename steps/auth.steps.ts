@@ -66,7 +66,7 @@ When('I login with the newly registered account', async () => {
   await accountPage.performLogin(currentAccountData.email, currentAccountData.password);
 });
 
-// NEW: Step to handle login for preset users using Environment Variables
+// Step to handle login for preset users using Environment Variables
 When('I login with a preset {string} account', async ({}, rankType: string) => {
   // Read from .env based on rank
   const email = rankType === 'Premium' ? process.env.PRESET_PREMIUM_EMAIL : process.env.PRESET_NORMAL_EMAIL;
@@ -89,7 +89,11 @@ Then('I should be successfully logged in to My Page', async () => {
   await accountPage.verifyEmailOnMyPage(currentAccountData.email);
 });
 
-When('I delete my account', async () => {
+When('I delete my account', async ({ page }) => {
+  // Navigate to My Page first because the Delete button only exists there.
+  await page.goto('https://hotel-example-site.takeyaqa.dev/en-US/mypage.html');
+  
+  // Trigger the delete action from AccountPage
   await accountPage.deleteAccount();
 });
 
