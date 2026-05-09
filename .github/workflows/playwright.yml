@@ -1,0 +1,48 @@
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Environment variable to fix the GitHub Actions deprecation warning
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        # Ensure this is explicitly set to 24 to fix the Faker ESM issue
+        node-version: 24
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps chromium
+
+    - name: Run E2E Tests
+      run: npm run test
+      env:
+        PRESET_PREMIUM_EMAIL: ${{ secrets.PRESET_PREMIUM_EMAIL }}
+        PRESET_PREMIUM_PASSWORD: ${{ secrets.PRESET_PREMIUM_PASSWORD }}
+        PRESET_NORMAL_EMAIL: ${{ secrets.PRESET_NORMAL_EMAIL }}
+        PRESET_NORMAL_PASSWORD: ${{ secrets.PRESET_NORMAL_PASSWORD }}
+
+    - name: Upload Test Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 7
