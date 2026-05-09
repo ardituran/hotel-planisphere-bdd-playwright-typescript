@@ -15,6 +15,7 @@ The primary goal of this project is to provide a robust, scalable, and easy-to-r
 | Framework | [playwright-bdd](https://vitalets.github.io/playwright-bdd/) |
 | Data Generation | [faker-js](https://fakerjs.dev/) |
 | Environment Management | [dotenv](https://www.npmjs.com/package/dotenv) |
+| **CI/CD** | [GitHub Actions](https://github.com/features/actions) |
 
 ---
 
@@ -86,20 +87,30 @@ To ensure high maintainability and readability, the project follows these design
 - **Session Management** — Implemented "Smart Logout" which clears cookies and reloads the page to prevent session flickering and race conditions.
 - **Pop-up Handling** — Automated handling of native browser dialogs (Confirm/Alert) during account deletion.
 - **Resilient Selectors** — Uses a combination of Role-based and CSS selectors for high reliability against UI changes.
+- **CI/CD Integration:** Automatically runs the entire test suite on every Push and Pull Request to the `main` branch using GitHub Actions, ensuring code stability.
 
 ---
 
 ## Roadmap & Future Enhancements
 
-- **User Data Logging** — Automatically log newly registered users into a local file (CSV or TXT) using Node.js `fs` for easy auditing.
-- **Advanced Reporting** — We plan to enhance the reporting system through three levels:
-  - **Level 1 (Playwright Native)** — Enable Video and Screenshot attachments for failed tests to assist in debugging.
-  - **Level 2 (Allure Report)** — Implement a professional dashboard with visual charts and trends for stakeholders.
-  - **Level 3 (Monocart/Custom)** — Integrate modern reporting alternatives for better trace integration.
+- [x] **User Data Logging** — Automatically log newly registered users into a local file (CSV or TXT) using Node.js `fs` for easy auditing.
+- [x] **Advanced Reporting** — We plan to enhance the reporting system through three levels:
+  - [x] **Level 1 (Playwright Native)** — Enable Video and Screenshot attachments for failed tests to assist in debugging.
+  - [x] **Level 2 (Allure Report)** — Implement a professional dashboard with visual charts and trends for stakeholders.
+  - [x] **Level 3 (Monocart/Custom)** — Integrate modern reporting alternatives for better trace integration.
+- [x] **CI/CD Integration:** Implemented GitHub Actions to automate test execution and report generation.
+- [x] **Onboarding Guide:** Created `GUIDE.md` to help Junior QA engineers understand the scripting workflow and Git best practices.
 
 ---
 
 ## Version History
+
+### v1.1.1 — May 9, 2026
+
+**CI/CD Pipeline Integration**
+- **Automated Workflow:** Created `playwright.yml` to trigger tests automatically on GitHub.
+- **Security:** Integrated GitHub Secrets to manage sensitive credentials for automated runs.
+- **Artifact Management:** Configured automatic upload of Playwright HTML reports for every failed CI run.
 
 ### v1.1.0 — May 8, 2026
 
