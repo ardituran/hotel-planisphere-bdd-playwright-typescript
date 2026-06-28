@@ -9,13 +9,16 @@
     "test": "npx bddgen && npx playwright test --project=chromium",
     "test:ui": "npx bddgen && npx playwright test --project=chromium --ui",
     "test:headed": "npx bddgen && npx playwright test --project=chromium --headed",
-    "test:focus": "npx bddgen && npx playwright test --project=chromium -g"
+    "test:focus": "npx bddgen && npx playwright test --project=chromium -g",
+    "report": "allure serve allure-results"
   },
   "keywords": [
     "playwright",
     "bdd",
     "automation",
-    "qa"
+    "qa",
+    "sdet",
+    "e2e"
   ],
   "author": "Idris Ardi",
   "license": "ISC",
@@ -23,6 +26,8 @@
   "devDependencies": {
     "@faker-js/faker": "^10.4.0",
     "@playwright/test": "^1.59.1",
+    "allure-commandline": "^2.43.0",
+    "allure-playwright": "^3.10.2",
     "playwright-bdd": "^8.5.0"
   },
   "dependencies": {
