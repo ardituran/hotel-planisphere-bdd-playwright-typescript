@@ -31,3 +31,6 @@ playwright/.cache/
 # Ignore Mac/Windows system hidden files
 .DS_Store
 Thumbs.db
+# Ignore Allure report folders
+allure-results/
+allure-report/

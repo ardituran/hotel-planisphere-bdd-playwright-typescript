@@ -1,129 +1,150 @@
-# Hotel Planisphere BDD Automation (Playwright & TypeScript)
+# Hotel Planisphere — BDD Test Automation
 
-This repository contains an End-to-End (E2E) Test Automation Framework for the Hotel Planisphere website. It is built using Playwright, TypeScript, and Cucumber BDD (via `playwright-bdd`).
+An end-to-end test automation framework for the [Hotel Planisphere](https://hotel-example-site.takeyaqa.dev/en-US/) website, built with **Playwright**, **TypeScript**, and **Cucumber BDD** via `playwright-bdd`.
 
-The primary goal of this project is to provide a robust, scalable, and easy-to-read automation suite that serves as a practical learning resource for QA Engineers and a professional portfolio piece.
+This project serves as both a practical learning resource for QA engineers and a professional portfolio piece, with a focus on clean architecture, scalability, and readable test scenarios.
 
 ---
 
-## Technical Stack
+## Tech Stack
 
-| Role | Tool |
+| Area | Tool |
 |---|---|
-| Logic | [Playwright](https://playwright.dev/) |
-| Language | [TypeScript](https://www.typescriptlang.org/) |
-| Framework | [playwright-bdd](https://vitalets.github.io/playwright-bdd/) |
-| Data Generation | [faker-js](https://fakerjs.dev/) |
-| Environment Management | [dotenv](https://www.npmjs.com/package/dotenv) |
-| **CI/CD** | [GitHub Actions](https://github.com/features/actions) |
+| Test automation | Playwright |
+| Language | TypeScript |
+| BDD integration | playwright-bdd |
+| Test data | faker-js |
+| Environment management | dotenv |
+| Reporting | Allure Report |
+| CI/CD | GitHub Actions |
 
 ---
 
 ## Prerequisites
 
-Ensure you have the following installed on your local machine:
+Ensure the following are installed on your local machine before getting started:
 
-- **Node.js** (Version 16 or higher recommended)
-- **Visual Studio Code** or **Cursor** (Recommended IDE)
-- **Git** (For version control)
+- **Node.js** — version 16 or higher
+- **Java Runtime Environment (JRE)** — required to serve Allure reports
+- **Visual Studio Code** or **Cursor** — recommended IDE
+- **Git** — for version control
 
 ---
 
 ## Installation
 
-### 1. Clone and Install
-
-First, clone this repository to your local machine, then navigate to the project folder and install the dependencies:
+**1. Clone and install dependencies**
 
 ```bash
+git clone <your-repository-url>
+cd hotel-planisphere-bdd-playwright-typescript
 npm install
 ```
 
-### 2. Configure Environment Variables
+**2. Configure environment variables**
 
-This project uses a `.env` file to manage sensitive credentials safely. Follow the instructions based on your operating system to create the file from the provided template:
-
-**Mac or Linux:**
+This project uses a `.env` file to manage sensitive credentials. Create it from the provided template:
 
 ```bash
+# macOS / Linux
 cp .env.template .env
-```
 
-**Windows (Command Prompt):**
-
-```dos
+# Windows (Command Prompt)
 copy .env.template .env
 ```
 
-After creating the file, open `.env` and fill in the values for `PRESET_PREMIUM_EMAIL`, `PRESET_PREMIUM_PASSWORD`, etc., with valid credentials.
+Open the `.env` file and fill in the required values such as `PRESET_PREMIUM_EMAIL`, `PRESET_PREMIUM_PASSWORD`, and any other credentials listed in the template.
 
 ---
 
-## Project Structure & Architecture
+## Architecture
 
-To ensure high maintainability and readability, the project follows these design patterns:
+The project follows established design patterns to keep the codebase clean and maintainable.
 
-- **Behavior Driven Development (BDD)** — Scenarios are written in plain English using Gherkin syntax (`Given`, `When`, `Then`) inside `.feature` files.
-- **Page Object Model (POM)** — UI elements and page actions are encapsulated within specific Page Classes to separate logic from test scripts.
-- **Smart Data Factory** — A centralized `DataHelper.ts` handles complex business rules and generates random, valid test data dynamically.
+**Behavior Driven Development (BDD)**
+Scenarios are written in plain English using Gherkin syntax (`Given`, `When`, `Then`) inside `.feature` files, making them readable by non-technical stakeholders.
+
+**Page Object Model (POM)**
+UI locators and page-level actions are encapsulated in dedicated page classes, keeping test scripts clean and resilient to UI changes.
+
+**Data Factory**
+A centralized `DataHelper.ts` manages dynamic test data generation and applies business rule constraints such as booking date windows, guest limits, and room plan logic.
 
 ---
 
-## How to Run Tests
+## Running Tests
 
 | Command | Description |
 |---|---|
-| `npm run test` | Run all tests in headless mode (background). |
-| `npm run test:headed` | Run all tests with the browser visible. |
-| `npm run test:focus -- "@auth"` | Run specific tests using tags (e.g., `@auth`, `@member`). |
-| `npm run test:focus -- "For honeymoon"` | Run a specific test by its scenario name. |
+| `npm run test` | Run all tests in headless mode |
+| `npm run test:headed` | Run all tests with the browser visible |
+| `npm run test:ui` | Run tests using Playwright's interactive UI mode |
+| `npm run test:focus -- "@auth"` | Run tests filtered by tag (e.g. `@auth`, `@member`) |
+| `npm run test:focus -- "For honeymoon"` | Run a specific scenario by name |
+| `npm run report` | Generate and serve the Allure Report dashboard |
 
 ---
 
 ## Key Features
 
-- **Membership Scenarios** — Automates specific reservation flows for Guest, Normal Member, and Premium Member accounts.
-- **Business Rule Enforcement** — Dynamically applies hotel constraints (e.g., Max Stay, Min/Max Guests) per room plan using a custom logic handler.
-- **Session Management** — Implemented "Smart Logout" which clears cookies and reloads the page to prevent session flickering and race conditions.
-- **Pop-up Handling** — Automated handling of native browser dialogs (Confirm/Alert) during account deletion.
-- **Resilient Selectors** — Uses a combination of Role-based and CSS selectors for high reliability against UI changes.
-- **CI/CD Integration:** Automatically runs the entire test suite on every Push and Pull Request to the `main` branch using GitHub Actions, ensuring code stability.
+- **Membership scenarios** — covers reservation flows for Guest, Normal Member, and Premium Member account types.
+- **Business rule enforcement** — dynamically applies hotel constraints per room plan, including max stay, minimum and maximum guest counts.
+- **Session management** — smart logout clears cookies and reloads the page to prevent session flickering and race conditions.
+- **Modal and dialog handling** — handles native browser dialogs and structured modal interactions to avoid strict mode resolution errors.
+- **Resilient selectors** — uses role-based and CSS selectors to maintain stability against UI changes.
+- **Tab control** — intercepts and removes `target="_blank"` attributes to keep cross-page workflows within a single context.
+- **CI/CD integration** — the full test suite runs automatically on every push and pull request to the main branch via GitHub Actions.
 
 ---
 
-## Roadmap & Future Enhancements
+## Completed Work
 
-- [x] **User Data Logging** — Automatically log newly registered users into a local file (CSV or TXT) using Node.js `fs` for easy auditing.
-- [x] **Advanced Reporting** — We plan to enhance the reporting system through three levels:
-  - [x] **Level 1 (Playwright Native)** — Enable Video and Screenshot attachments for failed tests to assist in debugging.
-  - [x] **Level 2 (Allure Report)** — Implement a professional dashboard with visual charts and trends for stakeholders.
-  - [x] **Level 3 (Monocart/Custom)** — Integrate modern reporting alternatives for better trace integration.
-- [x] **CI/CD Integration:** Implemented GitHub Actions to automate test execution and report generation.
-- [x] **Onboarding Guide:** Created `GUIDE.md` to help Junior QA engineers understand the scripting workflow and Git best practices.
+- Native Playwright video and screenshot attachments for failed test runs.
+- Allure Report integration with visual charts and trend dashboards.
+- GitHub Actions workflow for automated test execution and report artifact upload.
+
+---
+
+## Roadmap
+
+| Feature | Status |
+|---|---|
+| Log registered users to a local CSV or TXT file via Node.js `fs` | Pending |
+| Integrate Monocart or modern reporting alternative for better trace support | Pending |
+| Create `GUIDE.md` for onboarding junior QA engineers | Pending |
+| Configure scheduled daily test runs using GitHub Actions cron jobs | Pending |
+| Send test result alerts via Telegram or Discord webhooks | Pending |
 
 ---
 
 ## Version History
 
-### v1.1.1 — May 9, 2026
+**v1.2.0 — June 27, 2026**
+- Integrated Allure Report for dynamic visual HTML dashboards.
+- Resolved strict mode violation errors on multi-instance modal locators.
+- Injected tab attribute modifications to avoid fragmented secondary tab contexts.
+- Validated 90-day booking window logic in `DataHelper.ts` for test stability.
 
-**CI/CD Pipeline Integration**
-- **Automated Workflow:** Created `playwright.yml` to trigger tests automatically on GitHub.
-- **Security:** Integrated GitHub Secrets to manage sensitive credentials for automated runs.
-- **Artifact Management:** Configured automatic upload of Playwright HTML reports for every failed CI run.
+**v1.1.1 — May 9, 2026**
+- Created `playwright.yml` to trigger automated test runs on GitHub.
+- Integrated GitHub Secrets for secure credential management in CI.
+- Configured automatic upload of Playwright HTML report artifacts on failed runs.
 
-### v1.1.0 — May 8, 2026
+**v1.1.0 — May 8, 2026**
+- Added reservation scenarios for Premium and Normal Membership levels.
+- Included logic for Premium, With Dinner, and Economical room plans.
+- Implemented smart login flow for both preset and newly created members.
+- Enhanced `DataHelper.ts` with H+1 date-offset logic to avoid same-day booking errors.
 
-- Added comprehensive Reservation scenarios for Premium and Normal Membership levels.
-- Included logic for 3 new plans: Premium, With Dinner, and Economical.
-- Implemented "Smart Login" logic to handle both preset and newly created members.
-- Enhanced `DataHelper.ts` with date-offset logic (H+1) to avoid same-day booking errors.
+**v1.0.0 — May 6, 2026**
+- Initial release with Playwright and BDD infrastructure setup.
+- Automated authentication flows: sign up, login, logout, and account deletion.
+- Resolved race conditions and UI flickering on logout navigation.
+- Created initial reservation workflow for guest users.
 
-### v1.0.0 — May 6, 2026
+---
 
-**Initial Release**
+## Author
 
-- Setup basic Playwright + BDD infrastructure.
-- Automated Authentication (Sign Up, Login, Logout, Delete).
-- Resolved race conditions during navigation and UI flickering on Logout.
-- Created initial reservation workflow for Guest users.
+**Idris Ardi**  
+Senior Software Quality Assurance Engineer
