@@ -18,8 +18,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     
-    # OPSI 4: Menggunakan Official Docker Image dari Playwright
-    # (Pastikan versinya sama dengan yang ada di package.json lu)
+    # Use the official Playwright Docker image to skip browser installation
+    # Note: Ensure the version tag matches the playwright version in package.json
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-jammy
 
@@ -31,18 +31,16 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 24
-        # OPSI 3: Caching NPM dependencies biar nggak download dari nol terus
+        # Cache NPM dependencies to speed up the workflow execution
         cache: 'npm'
 
     - name: Install Dependencies
       run: npm ci
 
-    # Langkah 'npx playwright install' DIHAPUS karena browser sudah ada di dalam Docker Image
-
     - name: Run E2E Tests
       run: npm run test
       env:
-        # OPSI 2: Memaksa mode CI agar terminal tidak hang
+        # Force CI mode to prevent terminal from hanging
         CI: true
         PRESET_PREMIUM_EMAIL: ${{ secrets.PRESET_PREMIUM_EMAIL }}
         PRESET_PREMIUM_PASSWORD: ${{ secrets.PRESET_PREMIUM_PASSWORD }}
@@ -63,10 +61,14 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
+        format: markdown
         message: |
-          🤖 Hotel Planisphere Test Result:
+          🤖 *Hotel Planisphere Automation Run*
           
-          Status: ${{ job.status }}
-          Branch: ${{ github.ref_name }}
+          *Status:* ${{ job.status }}
+          *Branch:* ${{ github.ref_name }}
           
-          Please check the GitHub Actions tab for the full report!
+          🔍 *Report & Logs:*
+          Click the link below to view the GitHub Actions run and download the generated report artifact (ZIP).
+          
+          🔗 [View GitHub Actions Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
