@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  # Run automatically every day at 01:00 UTC (08:00 AM WIB)
+  schedule:
+    - cron: '0 1 * * *'
 
 # Environment variable to fix the GitHub Actions deprecation warning
 env:
@@ -46,3 +49,18 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 7
+
+    # Send Telegram notification after tests and reports are done
+    - name: Send Telegram Notification
+      if: always()
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          🤖 Hotel Planisphere Test Result:
+          
+          Status: ${{ job.status }}
+          Branch: ${{ github.ref_name }}
+          
+          Please check the GitHub Actions tab for the full report!
