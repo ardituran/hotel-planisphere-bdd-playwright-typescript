@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  # Run automatically every day at 01:00 UTC (08:00 AM WIB)
+  schedule:
+    - cron: '0 1 * * *'
 
 # Environment variable to fix the GitHub Actions deprecation warning
 env:
@@ -14,6 +17,11 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    
+    # Use the official Playwright Docker image to skip browser installation
+    # Note: Ensure the version tag matches the playwright version in package.json
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-jammy
 
     steps:
     - name: Checkout Code
@@ -22,18 +30,18 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        # Ensure this is explicitly set to 24 to fix the Faker ESM issue
         node-version: 24
+        # Cache NPM dependencies to speed up the workflow execution
+        cache: 'npm'
 
     - name: Install Dependencies
-      run: npm install
-
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps chromium
+      run: npm ci
 
     - name: Run E2E Tests
       run: npm run test
       env:
+        # Force CI mode to prevent terminal from hanging
+        CI: true
         PRESET_PREMIUM_EMAIL: ${{ secrets.PRESET_PREMIUM_EMAIL }}
         PRESET_PREMIUM_PASSWORD: ${{ secrets.PRESET_PREMIUM_PASSWORD }}
         PRESET_NORMAL_EMAIL: ${{ secrets.PRESET_NORMAL_EMAIL }}
@@ -46,3 +54,21 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 7
+
+    - name: Send Telegram Notification
+      if: always()
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        format: markdown
+        message: |
+          🤖 *Hotel Planisphere Automation Run*
+          
+          *Status:* ${{ job.status }}
+          *Branch:* ${{ github.ref_name }}
+          
+          🔍 *Report & Logs:*
+          Click the link below to view the GitHub Actions run and download the generated report artifact (ZIP).
+          
+          🔗 [View GitHub Actions Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
