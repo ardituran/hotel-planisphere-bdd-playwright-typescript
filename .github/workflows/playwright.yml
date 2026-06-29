@@ -17,6 +17,11 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    
+    # OPSI 4: Menggunakan Official Docker Image dari Playwright
+    # (Pastikan versinya sama dengan yang ada di package.json lu)
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-jammy
 
     steps:
     - name: Checkout Code
@@ -25,18 +30,20 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        # Ensure this is explicitly set to 24 to fix the Faker ESM issue
         node-version: 24
+        # OPSI 3: Caching NPM dependencies biar nggak download dari nol terus
+        cache: 'npm'
 
     - name: Install Dependencies
-      run: npm install
+      run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps chromium
+    # Langkah 'npx playwright install' DIHAPUS karena browser sudah ada di dalam Docker Image
 
     - name: Run E2E Tests
       run: npm run test
       env:
+        # OPSI 2: Memaksa mode CI agar terminal tidak hang
+        CI: true
         PRESET_PREMIUM_EMAIL: ${{ secrets.PRESET_PREMIUM_EMAIL }}
         PRESET_PREMIUM_PASSWORD: ${{ secrets.PRESET_PREMIUM_PASSWORD }}
         PRESET_NORMAL_EMAIL: ${{ secrets.PRESET_NORMAL_EMAIL }}
@@ -50,7 +57,6 @@ jobs:
         path: playwright-report/
         retention-days: 7
 
-    # Send Telegram notification after tests and reports are done
     - name: Send Telegram Notification
       if: always()
       uses: appleboy/telegram-action@master
