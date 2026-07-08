@@ -1,128 +1,237 @@
-# Hotel Planisphere - BDD Test Automation
+# Hotel Planisphere Automation Guide
 
-This project is an end-to-end test automation framework for the [Hotel Planisphere](https://hotel-example-site.takeyaqa.dev/en-US/) website.
-It uses Playwright, TypeScript, and Cucumber BDD through `playwright-bdd`.
+Onboarding guide for junior QA engineers.
 
-The goal of this project is to build a test suite that is easy to read, easy to maintain, and useful as both a learning reference and a portfolio project.
+This guide explains how to work with the automation framework using Playwright, TypeScript, and BDD. It also covers coding rules, Git rules, and debugging steps.
 
-## Tech Stack
+## Purpose
 
-| Area | Tool |
-|---|---|
-| Test automation | Playwright |
-| Language | TypeScript |
-| BDD integration | playwright-bdd |
-| Test data | faker-js |
-| Environment management | dotenv |
-| Reporting | Allure Report |
-| CI/CD | GitHub Actions |
+This guide is written for junior Software QA engineers.
 
-## Prerequisites
+The goal is to help you understand the framework, write clean test scripts, and keep the project easy to maintain.
 
-Before you start, make sure these tools are installed on your computer:
+## Manual Testing First
 
-- Node.js version 16 or higher.
-- Java Runtime Environment (JRE) for Allure Report.
-- Visual Studio Code or Cursor.
-- Git.
+Always run the test case manually before writing automation.
 
-## Installation
+This helps you understand the feature flow, business rules, validation, and expected results. If you do not understand the feature manually, the automation script may test the wrong thing.
 
-1. Clone the repository and install dependencies.
+## Workflow
 
-```bash
-git clone <your-repository-url>
-cd hotel-planisphere-bdd-playwright-typescript
-npm install
+Follow this order when you create a new automation task.
+
+### 1. Write the feature file
+
+Create a new file in the `features` folder.
+
+Write the scenario in simple Gherkin format using `Given`, `When`, and `Then`.
+
+### 2. Create the page object
+
+Create a page file in the `pages` folder.
+
+Store UI locators and reusable actions in this file.
+
+### 3. Create the step definitions
+
+Create a file in the `steps` folder.
+
+This file connects the Gherkin text to the page object methods.
+
+### 4. Run and validate locally
+
+Run the test on your own machine first.
+
+Fix the problem until the scenario passes correctly.
+
+## Example
+
+This example shows a simple login flow using a preset premium account.
+
+### Feature file example
+
+```gherkin
+Feature: Member Authentication
+  As a registered user of Hotel Planisphere
+  I want to login with my credentials
+  In order to book dynamic hotel packages
+
+  @auth @smoke
+  Scenario: Successful login with valid preset premium account
+    Given The user navigates to the Hotel Planisphere home page
+    When The user submits valid premium credentials
+    Then The user should be redirected to the My Page dashboard
+    And The dashboard should display the correct membership status
 ```
 
-2. Create the `.env` file from the template.
+### Page object example
 
-```bash
-# macOS / Linux
-cp .env.template .env
+```ts
+import { Page, Locator } from '@playwright/test';
 
-# Windows (Command Prompt)
-copy .env.template .env
+export class LoginPage {
+  private readonly page: Page;
+  private readonly emailInput: Locator;
+  private readonly passwordInput: Locator;
+  private readonly submitButton: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.emailInput = page.locator('#email');
+    this.passwordInput = page.locator('#password');
+    this.submitButton = page.locator('#login-button');
+  }
+
+  async navigate(): Promise<void> {
+    await this.page.goto('/en-US/login.html');
+  }
+
+  async login(email: string, pass: string): Promise<void> {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(pass);
+    await this.submitButton.click();
+  }
+}
 ```
 
-3. Open `.env` and fill in the required values, such as `PRESET_PREMIUM_EMAIL` and `PRESET_PREMIUM_PASSWORD`.
+### Step definition example
 
-## Project Structure
+```ts
+import { Given, When, Then } from '@cucumber/cucumber';
+import { expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+import { DashboardPage } from '../pages/DashboardPage';
 
-This project uses simple patterns to keep the code clear and organized.
+Given('The user navigates to the Hotel Planisphere home page', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.navigate();
+});
 
-- **BDD** - Test scenarios are written in plain English using `Given`, `When`, and `Then` inside `.feature` files.
-- **Page Object Model (POM)** - Page elements and actions are placed in page classes to keep test code clean.
-- **Data Factory** - `DataHelper.ts` creates valid test data and applies business rules such as booking dates and guest limits.
+// eslint-disable-next-line no-empty-pattern
+When('The user submits valid premium credentials', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const email = process.env.PRESET_PREMIUM_EMAIL || '';
+  const password = process.env.PRESET_PREMIUM_PASSWORD || '';
 
-## Running Tests
+  await loginPage.login(email, password);
+});
 
-| Command | Description |
-|---|---|
-| `npm run test` | Run all tests in headless mode. |
-| `npm run test:headed` | Run all tests with the browser visible. |
-| `npm run test:ui` | Run tests with Playwright UI mode. |
-| `npm run test:focus -- "@auth"` | Run tests by tag, such as `@auth` or `@member`. |
-| `npm run test:focus -- "For honeymoon"` | Run one specific scenario by name. |
-| `npm run report` | Generate and open the Allure Report dashboard. |
+Then('The user should be redirected to the My Page dashboard', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await expect(dashboardPage.headerTitle).toBeVisible();
+});
+```
 
-## Key Features
+## Coding Rules
 
-- Membership scenarios for Guest, Normal Member, and Premium Member flows.
-- Business rule checks for stay limits and guest limits.
-- Smart logout that clears cookies and reloads the page.
-- Modal and dialog handling for browser alerts and popups.
-- Stable selectors using role-based and CSS selectors.
-- Tab control that removes `target="_blank"` when needed.
-- GitHub Actions integration for automatic test runs on push and pull request.
+Follow these rules to keep the code clean.
 
-## Completed Work
+### File naming
 
-- Playwright video and screenshot attachments for failed tests.
-- Allure Report with charts and trend dashboard.
-- GitHub Actions workflow for test execution and report upload.
-- Scheduled daily test runs using GitHub Actions cron jobs.
-- Telegram webhook alerts for test result notifications.
+- Use PascalCase for page object files, such as `LoginPage.ts` or `HotelReservePage.ts`.
+- Use lowercase dot format for step files, such as `auth.steps.ts` or `reservation.steps.ts`.
 
-## Roadmap
+### Locator strategy
 
-| Feature | Status |
-|---|---|
-| Save registered users to a local CSV or TXT file using Node.js `fs` | Pending |
-| Finalise `GUIDE.md` for junior QA onboarding | Pending |
+Use stable selectors first.
 
-## Version History
+Good examples:
 
-**v1.3.0 - June 29, 2026**
-- Added GitHub Actions cron jobs for daily test runs.
-- Added Telegram webhook alerts for CI/CD results.
-- Secured bot tokens and chat IDs with GitHub Secrets.
+```ts
+page.locator('#email')
+page.getByRole('button', { name: 'Submit' })
+```
 
-**v1.2.0 - June 27, 2026**
-- Added Allure Report with visual HTML dashboards.
-- Fixed strict mode errors on multi-instance modal locators.
-- Improved tab handling for reservation flows.
-- Validated 90-day booking window rules in `DataHelper.ts`.
+Avoid long XPath selectors because they break easily when the UI changes.
 
-**v1.1.1 - May 9, 2026**
-- Added `playwright.yml` for automated GitHub runs.
-- Used GitHub Secrets for secure CI credentials.
-- Uploaded Playwright HTML report artifacts on failed runs.
+### Use await
 
-**v1.1.0 - May 8, 2026**
-- Added reservation scenarios for Premium and Normal Member.
-- Added room plans for Premium, With Dinner, and Economical.
-- Added smart login for preset and new members.
-- Improved `DataHelper.ts` with H+1 date logic.
+Most Playwright actions are asynchronous.
 
-**v1.0.0 - May 6, 2026**
-- Set up Playwright and BDD structure.
-- Added sign up, login, logout, and delete flows.
-- Fixed logout race conditions and UI flicker.
-- Added initial guest reservation flow.
+Always use `await` for page actions and assertions.
+
+### Run format and lint
+
+Before you commit or push, run these commands:
+
+```bash
+npm run format
+npm run lint
+```
+
+These commands help keep the code style consistent and catch common issues early.
+
+## Git Rules
+
+This project uses a protected `main` branch.
+
+Do not commit or push directly to `main`. Always use a separate branch.
+
+### Branch naming
+
+Use this format:
+
+```bash
+type/github-username/short-description
+```
+
+Examples:
+
+- `feat/yourname/premium-reservation`
+- `fix/yourname/date-picker-flicker`
+- `refactor/yourname/update-docs-guide`
+
+### Commit message style
+
+Use clear commit prefixes:
+
+- `feat:` for a new feature or scenario.
+- `fix:` for bug fixes.
+- `refactor:` for cleanup, formatting, or documentation updates.
+
+Before opening a pull request, make sure your tests pass and your files are formatted.
+
+## Debugging
+
+Test failures are normal.
+
+Use this order to debug faster:
+
+1. Focus on one scenario.
+2. Use Trace Viewer.
+3. Check test data rules.
+
+### Focus on one scenario
+
+When a test fails, do not run the full suite first.
+
+Add `@focus` to the failing scenario and run only that test.
+
+### Use Trace Viewer
+
+If a test fails in GitHub Actions, download the trace artifact and inspect it with Playwright Trace Viewer.
+
+```bash
+npx playwright show-trace path/to/downloaded-trace.zip
+```
+
+This helps you see what happened in the browser step by step.
+
+### Check test data rules
+
+Some failures happen because the test data does not match the app rules.
+
+For example, Hotel Planisphere has a 90-day booking limit. If the app shows validation errors, check the data generated in `DataHelper.ts`.
+
+## Final Notes
+
+Good automation is not only about making the test pass.
+
+It is also about understanding the feature, writing clear steps, using stable locators, and keeping the test easy for others to read and maintain.
+
+Start small, stay consistent, and improve step by step.
 
 ## Author
 
-Idris Ardi
+ardituran
 Software Quality Assurance Engineer
