@@ -26,7 +26,7 @@ export default class AccountPage {
   // My Page Locators
   readonly logoutBtn: Locator;
   readonly deleteAccountBtn: Locator;
-  readonly myPageEmailText: Locator; 
+  readonly myPageEmailText: Locator;
   // Added locator for username on My Page based on your finding
   readonly myPageNameText: Locator;
 
@@ -55,7 +55,9 @@ export default class AccountPage {
 
     // Initialize My Page Locators
     this.logoutBtn = page.getByRole('button', { name: 'Logout' });
-    this.deleteAccountBtn = page.getByRole('button', { name: 'Delete Account' });
+    this.deleteAccountBtn = page.getByRole('button', {
+      name: 'Delete Account',
+    });
     this.myPageEmailText = page.locator('#email');
     // Initialize username locator
     this.myPageNameText = page.locator('#username');
@@ -67,6 +69,8 @@ export default class AccountPage {
     await this.page.goto('https://hotel-example-site.takeyaqa.dev/en-US/signup.html');
   }
 
+  // Disable ESLint rule for 'any' to maintain the flexible data structure
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async fillSignupForm(accountData: any) {
     await this.emailSignupInput.fill(accountData.email);
     await this.passwordSignupInput.fill(accountData.password);
@@ -82,7 +86,7 @@ export default class AccountPage {
     await this.addressInput.fill(accountData.address);
     await this.phoneInput.fill(accountData.phone);
     await this.genderSelect.selectOption(accountData.gender);
-    
+
     await this.dobInput.fill(accountData.dob);
     await this.dobInput.press('Tab');
 
@@ -100,7 +104,7 @@ export default class AccountPage {
   async verifyAccountOnMyPage(expectedEmail: string, expectedName: string) {
     // Assert we are on the My Page URL
     await expect(this.page).toHaveURL(/mypage/);
-    
+
     // Assert the data matches our signup input
     await expect(this.myPageEmailText).toHaveText(expectedEmail);
     await expect(this.myPageNameText).toHaveText(expectedName);
@@ -109,10 +113,10 @@ export default class AccountPage {
   async logout() {
     // Click logout button
     await this.logoutBtn.click();
-    
+
     // Wait for the URL to perfectly match the index page
     await this.page.waitForURL(/index/);
-    
+
     // This will NOT delete the registered user because they are saved in Local Storage.
     await this.page.context().clearCookies();
 
@@ -127,7 +131,7 @@ export default class AccountPage {
   async gotoLogin() {
     // We can safely use direct navigation without worrying about race conditions!
     await this.page.goto('https://hotel-example-site.takeyaqa.dev/en-US/login.html');
-    
+
     // Guarantee we arrived at the login page AND the input is visible before typing
     await this.emailLoginInput.waitFor({ state: 'visible' });
   }
@@ -144,11 +148,13 @@ export default class AccountPage {
 
   async deleteAccount() {
     // Handle the native browser pop-up confirmation dialog
-    this.page.on('dialog', async dialog => {
+    this.page.on('dialog', async (dialog) => {
+      // Inform ESLint to permit console usage here for execution visibility
+      /* eslint-disable-next-line no-console */
       console.log(`[Browser Pop-up]: ${dialog.message()}`);
-      await dialog.accept(); 
+      await dialog.accept();
     });
-    
+
     await this.deleteAccountBtn.click();
   }
 }

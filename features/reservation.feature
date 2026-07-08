@@ -1,4 +1,5 @@
-@e2e @reservation
+@e2e
+@reservation
 Feature: Hotel Reservation for All User Types
   As various user types (Guest, Normal Member, Premium Member)
   I want to be able to reserve hotel plans that are available for my level
@@ -21,7 +22,9 @@ Feature: Hotel Reservation for All User Types
       | For honeymoon             |
       | With complimentary ticket |
 
-  @member @premium @existing
+  @member
+  @premium
+  @existing
   Scenario Outline: Existing Premium Member: Reserve all available plans including "<PlanName>"
     Given I am logged in as a "Premium" member
     When I select the "<PlanName>" room plan
@@ -42,7 +45,9 @@ Feature: Hotel Reservation for All User Types
       | For honeymoon             |
       | With complimentary ticket |
 
-  @member @normal @existing
+  @member
+  @normal
+  @existing
   Scenario Outline: Existing Normal Member: Reserve available plans including "<PlanName>"
     Given I am logged in as a "Normal" member
     When I select the "<PlanName>" room plan
@@ -62,7 +67,9 @@ Feature: Hotel Reservation for All User Types
       | For honeymoon             |
       | With complimentary ticket |
 
-  @member @new_user @delete_after
+  @member
+  @new_user
+  @delete_after
   Scenario Outline: New Member: Sign up as "<Rank>", login, and reserve "<PlanName>"
     Given I am on the Sign Up page
     When I register a new "<Rank>" account
