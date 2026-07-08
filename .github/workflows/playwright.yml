@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  # Run automatically every day at 01:00 UTC (08:00 AM WIB)
+  # Automated trigger configured using UTC time (01:00 UTC equals 08:00 AM WIB GMT+7)
   schedule:
     - cron: '0 1 * * *'
 
@@ -30,12 +30,22 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 24
+        # FIXED: Wrapped in quotes to satisfy string type requirement
+        node-version: '24'
         # Cache NPM dependencies to speed up the workflow execution
         cache: 'npm'
 
     - name: Install Dependencies
       run: npm ci
+
+    # Step added to automatically verify code quality before running automation scripts
+    - name: Run Lint Check
+      run: npm run lint
+
+    # FIXED: Added 'id' and changed to $GITHUB_OUTPUT to make it visible to the IDE linter
+    - name: Generate Timestamp
+      id: timestamp
+      run: echo "REPORT_DATE=$(date +'%Y-%m-%d-%H%M')" >> $GITHUB_OUTPUT
 
     - name: Run E2E Tests
       run: npm run test
@@ -47,11 +57,13 @@ jobs:
         PRESET_NORMAL_EMAIL: ${{ secrets.PRESET_NORMAL_EMAIL }}
         PRESET_NORMAL_PASSWORD: ${{ secrets.PRESET_NORMAL_PASSWORD }}
 
+    # Artifact upload step modified to use dynamic date and time variables
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: playwright-report
+        # FIXED: Referenced via steps output instead of hidden env context
+        name: playwright-report-${{ steps.timestamp.outputs.REPORT_DATE }}
         path: playwright-report/
         retention-days: 7
 

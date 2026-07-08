@@ -14,7 +14,7 @@ let accountPage: AccountPage;
 Given('I am on the hotel home page', async ({ page }) => {
   // Initialize the page object
   reservePage = new HotelReservePage(page);
-  
+
   // Go to the website
   await reservePage.gotoHome();
 });
@@ -22,12 +22,14 @@ Given('I am on the hotel home page', async ({ page }) => {
 // Step to handle automatic login for members using .env data
 Given('I am logged in as a {string} member', async ({ page }, rank: string) => {
   accountPage = new AccountPage(page);
-  const email = rank === 'Premium' ? process.env.PRESET_PREMIUM_EMAIL : process.env.PRESET_NORMAL_EMAIL;
-  const password = rank === 'Premium' ? process.env.PRESET_PREMIUM_PASSWORD : process.env.PRESET_NORMAL_PASSWORD;
+  const email =
+    rank === 'Premium' ? process.env.PRESET_PREMIUM_EMAIL : process.env.PRESET_NORMAL_EMAIL;
+  const password =
+    rank === 'Premium' ? process.env.PRESET_PREMIUM_PASSWORD : process.env.PRESET_NORMAL_PASSWORD;
 
   // Clear cookies first to ensure a clean login session
   await page.context().clearCookies();
-  
+
   await accountPage.gotoLogin();
   await accountPage.performLogin(email as string, password as string);
   await accountPage.verifyEmailOnMyPage(email as string);
@@ -42,16 +44,23 @@ When('I select the {string} room plan', async ({ page }, planName: string) => {
   await reservePage.selectPlan(planName);
 });
 
-When('I fill the reservation form for {string} with valid random data', async ({}, planName: string) => {
-  // Get all fake data and rules
-  const planData = DataHelper.getPlanConstraints(planName);
-  const guestData = DataHelper.generateGuestData();
-  
-  // Prepare text to show in the terminal (Email or Telephone)
-  const confirmText = planData.isEmail ? `Email (${guestData.email})` : `Telephone (${guestData.phone})`;
+// Disable ESLint rule for empty pattern because playwright-bdd requires it as the first argument
+When(
+  'I fill the reservation form for {string} with valid random data',
+  // eslint-disable-next-line no-empty-pattern
+  async ({}, planName: string) => {
+    // Get all fake data and rules
+    const planData = DataHelper.getPlanConstraints(planName);
+    const guestData = DataHelper.generateGuestData();
 
-  // Print the test data to terminal for easy debugging
-  console.log(`
+    // Prepare text to show in the terminal (Email or Telephone)
+    const confirmText = planData.isEmail
+      ? `Email (${guestData.email})`
+      : `Telephone (${guestData.phone})`;
+
+    // Inform ESLint to permit console usage here for execution visibility
+    /* eslint-disable-next-line no-console */
+    console.log(`
     ======================================
     Plan Name: ${planName}
     Checkin: ${planData.checkInDate}
@@ -66,9 +75,10 @@ When('I fill the reservation form for {string} with valid random data', async ({
     ======================================
   `);
 
-  // Fill the form using the fake data
-  await reservePage.fillForm(planData, guestData);
-});
+    // Fill the form using the fake data
+    await reservePage.fillForm(planData, guestData);
+  }
+);
 
 When('I submit the reservation form', async () => {
   // Click submit to finish booking

@@ -1,36 +1,44 @@
 {
-  "name": "hotel-automation",
-  "version": "1.0.0",
+  "name": "hotel-planisphere-bdd-playwright-typescript",
+  "version": "1.3.0",
+  "description": "Hotel Planisphere - BDD Test Automation Portfolio",
   "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
-    "test": "npx bddgen && npx playwright test --project=chromium",
-    "test:ui": "npx bddgen && npx playwright test --project=chromium --ui",
-    "test:headed": "npx bddgen && npx playwright test --project=chromium --headed",
-    "test:focus": "npx bddgen && npx playwright test --project=chromium -g",
-    "report": "allure serve allure-results"
+    "test": "npx bddgen && npx playwright test",
+    "test:headed": "npx bddgen && npx playwright test --headed",
+    "test:ui": "npx bddgen && npx playwright test --ui",
+    "test:focus": "npx bddgen && npx playwright test",
+    "report": "allure generate allure-results --clean && allure open allure-report",
+    "lint": "eslint \"{pages,steps,utils}/**/*.ts\"",
+    "lint:fix": "eslint \"{pages,steps,utils}/**/*.ts\" --fix",
+    "format": "prettier --write \"{pages,steps,utils,features}/**/*.{ts,feature,json}\""
   },
   "keywords": [
     "playwright",
+    "typescript",
     "bdd",
+    "cucumber",
     "automation",
-    "qa",
-    "sdet",
-    "e2e"
+    "testing"
   ],
   "author": "Idris Ardi",
   "license": "ISC",
-  "description": "E2E Automation for Hotel Planisphere using Playwright and BDD",
-  "devDependencies": {
-    "@faker-js/faker": "^10.4.0",
-    "@playwright/test": "^1.59.1",
-    "allure-commandline": "^2.43.0",
-    "allure-playwright": "^3.10.2",
-    "playwright-bdd": "^8.5.0"
-  },
   "dependencies": {
-    "dotenv": "^17.4.2"
+    "@cucumber/cucumber": "^10.8.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.59.1",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
+    "allure-commandline": "^2.29.0",
+    "allure-playwright": "^2.15.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "playwright-bdd": "^7.1.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-gherkin": "^4.0.0",
+    "typescript": "^5.4.5"
   }
 }
