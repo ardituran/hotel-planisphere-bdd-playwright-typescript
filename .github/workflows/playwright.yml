@@ -30,7 +30,8 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 24
+        # FIXED: Wrapped in quotes to satisfy string type requirement
+        node-version: '24'
         # Cache NPM dependencies to speed up the workflow execution
         cache: 'npm'
 
@@ -41,9 +42,10 @@ jobs:
     - name: Run Lint Check
       run: npm run lint
 
-    # Step added to generate custom dynamic timestamp for report identification
+    # FIXED: Added 'id' and changed to $GITHUB_OUTPUT to make it visible to the IDE linter
     - name: Generate Timestamp
-      run: echo "REPORT_DATE=$(date +'%Y-%m-%d-%H%M')" >> $GITHUB_ENV
+      id: timestamp
+      run: echo "REPORT_DATE=$(date +'%Y-%m-%d-%H%M')" >> $GITHUB_OUTPUT
 
     - name: Run E2E Tests
       run: npm run test
@@ -60,7 +62,8 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: playwright-report-${{ env.REPORT_DATE }}
+        # FIXED: Referenced via steps output instead of hidden env context
+        name: playwright-report-${{ steps.timestamp.outputs.REPORT_DATE }}
         path: playwright-report/
         retention-days: 7
 
