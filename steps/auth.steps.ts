@@ -33,7 +33,6 @@ Given('I am on the Login page', async ({ page }) => {
   await accountPage.gotoLogin();
 });
 
-// Disable ESLint rule for empty pattern because playwright-bdd requires it as the first argument
 // eslint-disable-next-line no-empty-pattern
 When('I register a new {string} account', async ({}, rankType: string) => {
   // Generate data based on rank type
@@ -80,7 +79,10 @@ When('I login with the newly registered account', async () => {
     ===================
   `);
 
-  await accountPage.performLogin(currentAccountData.email as string, currentAccountData.password as string);
+  await accountPage.performLogin(
+    currentAccountData.email as string,
+    currentAccountData.password as string
+  );
 });
 
 // Step to handle login for preset users using Environment Variables
@@ -96,9 +98,9 @@ When('I login with a preset {string} account', async ({}, rankType: string) => {
       : process.env.PRESET_NORMAL_PASSWORD;
 
   // Save to current variable so assertion step can check it later
-  currentAccountData = { 
-    email: email as string, 
-    password: password as string 
+  currentAccountData = {
+    email: email as string,
+    password: password as string,
   };
 
   // Inform ESLint to permit console usage here for execution visibility
