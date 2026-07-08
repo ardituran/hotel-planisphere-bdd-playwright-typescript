@@ -96,7 +96,10 @@ When('I login with a preset {string} account', async ({}, rankType: string) => {
       : process.env.PRESET_NORMAL_PASSWORD;
 
   // Save to current variable so assertion step can check it later
-  currentAccountData = { email: email };
+  currentAccountData = { 
+    email: email as string, 
+    password: password as string 
+  };
 
   // Inform ESLint to permit console usage here for execution visibility
   /* eslint-disable-next-line no-console */
