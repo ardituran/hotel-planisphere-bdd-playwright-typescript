@@ -172,22 +172,53 @@ Do not commit or push directly to `main`. Always use a separate branch.
 Use this format:
 
 ```bash
-type/github-username/short-description
+github-username/type/short-description
 ```
 
-Examples:
+**Branch types:**
 
-- `feat/yourname/premium-reservation`
-- `fix/yourname/date-picker-flicker`
-- `refactor/yourname/update-docs-guide`
+- `feat` - New features or test scenarios
+- `fix` - Bug fixes and issue resolution
+- `chore` - Maintenance tasks, dependency updates
+- `docs` - Documentation updates and improvements
+- `refactor` - Code cleanup, restructuring without feature changes
+- `test` - Test-related changes, test improvements, or test fixes
+
+**Examples:**
+
+- `yourname/feat/premium-booking-flow`
+- `yourname/fix/date-validation-error`
+- `yourname/chore/update-playwright-version`
+- `yourname/docs/api-testing-guide`
+- `yourname/refactor/cleanup-page-objects`
+- `yourname/test/add-smoke-test-suite`
 
 ### Commit message style
 
-Use clear commit prefixes:
+Use clear and descriptive commit prefixes that match your branch type:
 
-- `feat:` for a new feature or scenario.
-- `fix:` for bug fixes.
-- `refactor:` for cleanup, formatting, or documentation updates.
+- `feat:` - New features, test scenarios, or functionality additions
+- `fix:` - Bug fixes, issue resolution, or error corrections
+- `chore:` - Maintenance tasks, dependency updates, or build improvements
+- `docs:` - Documentation updates, README changes, or guide improvements
+- `refactor:` - Code cleanup, restructuring, or performance improvements
+- `test:` - Test additions, test fixes, or testing framework updates
+
+**Examples:**
+
+- `feat: add premium member reservation flow`
+- `fix: resolve date picker validation error`
+- `chore: update Playwright to version 1.40`
+- `docs: improve API testing guide with examples`
+- `refactor: simplify login page object methods`
+- `test: add smoke tests for booking scenarios`
+
+**Guidelines:**
+
+- Keep the message concise but descriptive
+- Use lowercase after the colon
+- Avoid ending with a period
+- Focus on what the commit accomplishes
 
 Before opening a pull request, make sure your tests pass and your files are formatted.
 
@@ -234,4 +265,5 @@ Start small, stay consistent, and improve step by step.
 ## Author
 
 ardituran
+
 Software Quality Assurance Engineer
