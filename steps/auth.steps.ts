@@ -20,7 +20,7 @@ interface AccountData {
 const { Given, When, Then } = createBdd();
 
 let accountPage: AccountPage;
-// Store data globally using type-safe structure instead of 'any'
+// Save the account data so the next steps can use it
 let currentAccountData: AccountData;
 
 Given('I am on the Sign Up page', async ({ page }) => {
@@ -44,7 +44,7 @@ When('I register a new {string} account', async ({}, rankType: string) => {
   if (currentAccountData.gender === '2') genderText = 'Female';
   if (currentAccountData.gender === '0') genderText = 'I do not answer';
 
-  // Inform ESLint to permit console usage here for execution visibility
+  // Print the data so I can see it in the log
   /* eslint-disable-next-line no-console */
   console.log(`
     ====== SIGN UP DATA ======
@@ -62,6 +62,12 @@ When('I register a new {string} account', async ({}, rankType: string) => {
   // Fill and submit
   await accountPage.fillSignupForm(currentAccountData);
   await accountPage.submitSignup();
+
+  // Check the account data on My Page before the next step
+  await accountPage.verifyAccountOnMyPage(
+    currentAccountData.email as string,
+    currentAccountData.username as string
+  );
 });
 
 When('I logout from the application', async () => {
@@ -71,7 +77,7 @@ When('I logout from the application', async () => {
 When('I login with the newly registered account', async () => {
   await accountPage.gotoLogin();
 
-  // Inform ESLint to permit console usage here for execution visibility
+  // Print the data so I can see it in the log
   /* eslint-disable-next-line no-console */
   console.log(`
     ====== LOGIN ======
@@ -103,7 +109,7 @@ When('I login with a preset {string} account', async ({}, rankType: string) => {
     password: password as string,
   };
 
-  // Inform ESLint to permit console usage here for execution visibility
+  // Print the data so I can see it in the log
   /* eslint-disable-next-line no-console */
   console.log(`
     ====== PRESET LOGIN ======

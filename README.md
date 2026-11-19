@@ -110,7 +110,6 @@ I list this here so I remember what to improve:
 - URL is hardcoded in several files instead of using `baseURL` in the config.
 - Some methods use `any` type.
 - Step files use global variables to share data between steps.
-- `test:focus` script is not finished yet.
 - My negative test cases are still simple. I only have 5 for now, and I want to add more.
 
 ## My plan to learn next

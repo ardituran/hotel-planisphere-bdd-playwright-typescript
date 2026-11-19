@@ -59,7 +59,7 @@ When(
       ? `Email (${guestData.email})`
       : `Telephone (${guestData.phone})`;
 
-    // Inform ESLint to permit console usage here for execution visibility
+    // Print the data so I can see it in the log
     /* eslint-disable-next-line no-console */
     console.log(`
     ======================================

@@ -5,11 +5,11 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  # Automated trigger configured using UTC time (01:00 UTC equals 08:00 AM WIB GMT+7)
+  # Run every day at 08:00 WIB (01:00 UTC)
   schedule:
     - cron: '0 1 * * *'
 
-# Environment variable to fix the GitHub Actions deprecation warning
+# Fix the GitHub Actions deprecation warning
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -18,8 +18,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     
-    # Use the official Playwright Docker image to skip browser installation
-    # Note: Ensure the version tag matches the playwright version in package.json
+    # Use the Playwright Docker image so we do not install browsers
+    # Remember: the version tag must match the playwright version in package.json
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-jammy
 
@@ -30,23 +30,21 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        # FIXED: Wrapped in quotes to satisfy string type requirement
         node-version: '24'
-        # Cache NPM dependencies to speed up the workflow execution
+        # Cache npm dependencies to make the run faster
         cache: 'npm'
 
     - name: Install Dependencies
       run: npm ci
       
-    # Check if code styling matches our formatting rules before running tests
+    # Check code formatting before running tests
     - name: Check Code Formatting
       run: npm run format -- --check
       
-    # Step added to automatically verify code quality before running automation scripts
     - name: Run Lint Check
       run: npm run lint
 
-    # FIXED: Added 'id' and changed to $GITHUB_OUTPUT to make it visible to the IDE linter
+    # Save the date so the report name can use it
     - name: Generate Timestamp
       id: timestamp
       run: echo "REPORT_DATE=$(date +'%Y-%m-%d-%H%M')" >> $GITHUB_OUTPUT
@@ -61,19 +59,19 @@ jobs:
         PRESET_NORMAL_EMAIL: ${{ secrets.PRESET_NORMAL_EMAIL }}
         PRESET_NORMAL_PASSWORD: ${{ secrets.PRESET_NORMAL_PASSWORD }}
 
-    # Artifact upload step modified to use dynamic date and time variables
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        # FIXED: Referenced via steps output instead of hidden env context
+        # Report name uses the date from the previous step
         name: playwright-report-${{ steps.timestamp.outputs.REPORT_DATE }}
         path: playwright-report/
         retention-days: 7
 
     - name: Send Telegram Notification
       if: always()
-      uses: appleboy/telegram-action@master
+      # Pinned to a release version so the action does not change unexpectedly
+      uses: appleboy/telegram-action@v1.1.2
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}

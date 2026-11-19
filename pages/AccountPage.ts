@@ -27,7 +27,7 @@ export default class AccountPage {
   readonly logoutBtn: Locator;
   readonly deleteAccountBtn: Locator;
   readonly myPageEmailText: Locator;
-  // Added locator for username on My Page based on your finding
+  // Username on My Page
   readonly myPageNameText: Locator;
 
   constructor(page: Page) {
@@ -59,7 +59,6 @@ export default class AccountPage {
       name: 'Delete Account',
     });
     this.myPageEmailText = page.locator('#email');
-    // Initialize username locator
     this.myPageNameText = page.locator('#username');
   }
 
@@ -69,7 +68,7 @@ export default class AccountPage {
     await this.page.goto('https://hotel-example-site.takeyaqa.dev/en-US/signup.html');
   }
 
-  // Disable ESLint rule for 'any' to maintain the flexible data structure
+  // 'any' keeps this data shape flexible for now
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   async fillSignupForm(accountData: any, confirmPassword?: string) {
     await this.emailSignupInput.fill(accountData.email);
@@ -100,8 +99,8 @@ export default class AccountPage {
     await this.signupBtn.click();
   }
 
-  // Brilliant addition! Assert the account data immediately after signup
-  // to ensure the My Page has fully loaded before attempting to logout.
+  // Check the account data on My Page first,
+  // so we know the page has loaded before logout.
   async verifyAccountOnMyPage(expectedEmail: string, expectedName: string) {
     // Assert we are on the My Page URL
     await expect(this.page).toHaveURL(/mypage/);
@@ -115,25 +114,24 @@ export default class AccountPage {
     // Click logout button
     await this.logoutBtn.click();
 
-    // Wait for the URL to perfectly match the index page
+    // Wait until we are back on the home page
     await this.page.waitForURL(/index/);
 
     // This will NOT delete the registered user because they are saved in Local Storage.
     await this.page.context().clearCookies();
 
-    // Hard reload the page to force the UI to refresh completely.
-    // This removes any hidden or flickering states from the navbar.
+    // Reload so the navbar shows the Login button again
     await this.page.reload();
 
-    // Wait until the Login button in the navbar is solidly VISIBLE.
+    // Wait until the Login button is visible
     await expect(this.navLoginBtn).toBeVisible();
   }
 
   async gotoLogin() {
-    // We can safely use direct navigation without worrying about race conditions!
+    // Go directly to the login page
     await this.page.goto('https://hotel-example-site.takeyaqa.dev/en-US/login.html');
 
-    // Guarantee we arrived at the login page AND the input is visible before typing
+    // Wait for the email field before typing
     await this.emailLoginInput.waitFor({ state: 'visible' });
   }
 
@@ -175,7 +173,7 @@ export default class AccountPage {
   async deleteAccount() {
     // Handle the native browser pop-up confirmation dialog
     this.page.on('dialog', async (dialog) => {
-      // Inform ESLint to permit console usage here for execution visibility
+      // Print the pop-up message so I can see it in the log
       /* eslint-disable-next-line no-console */
       console.log(`[Browser Pop-up]: ${dialog.message()}`);
       await dialog.accept();

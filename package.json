@@ -7,7 +7,7 @@
     "test": "npx bddgen && npx playwright test",
     "test:headed": "npx bddgen && npx playwright test --headed",
     "test:ui": "npx bddgen && npx playwright test --ui",
-    "test:focus": "npx bddgen && npx playwright test",
+    "test:focus": "npx bddgen && npx playwright test --grep @focus",
     "report": "allure generate allure-results --clean && allure open allure-report",
     "lint": "eslint \"{pages,steps,utils}/**/*.ts\"",
     "lint:fix": "eslint \"{pages,steps,utils}/**/*.ts\" --fix",
