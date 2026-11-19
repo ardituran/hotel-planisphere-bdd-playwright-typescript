@@ -35,7 +35,7 @@ All tests run on Chromium for now. I want to add Firefox later.
 - **playwright-bdd (Gherkin)** - because I come from manual testing, Gherkin feels familiar to me, like writing test cases.
 - **Faker** - to generate test data. I use the Indonesian locale.
 - **Allure** - to make a test report.
-- **GitHub Actions** - to run tests automatically every day at 08:00 WIB.
+- **GitHub Actions** - to run tests automatically every Monday at 09:00 WIB, or manually from the Actions tab.
 - **Telegram** - to get a notification after the run finishes.
 
 ## How to run
