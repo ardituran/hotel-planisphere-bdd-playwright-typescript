@@ -111,7 +111,7 @@ export default class HotelReservePage {
     await this.nameInput.fill(guestData.name);
     await this.specialRequestInput.fill(guestData.request);
 
-    // UPDATED: Use the data from DataHelper to choose Email or Phone
+    // Choose Email or Telephone from the data
     if (planData.isEmail) {
       await this.confirmationSelect.selectOption('email');
       await this.emailInput.fill(guestData.email);

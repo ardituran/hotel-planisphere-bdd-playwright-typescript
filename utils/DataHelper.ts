@@ -3,7 +3,7 @@ import { fakerID_ID as faker } from '@faker-js/faker';
 export default class DataHelper {
   // Method to create dummy data for the user
   static generateGuestData() {
-    // Use safe generic strings for account generation as well to avoid real names.
+    // Use random strings so we do not use real names
     const prefixName = 'GuestQA';
     const randomFirstName = faker.string.alpha(6);
     const randomLastName = faker.string.alpha(8);
@@ -23,9 +23,9 @@ export default class DataHelper {
     };
   }
 
-  // Method to accept specific rank and follow spreadsheet rules
+  // Create account data for a specific rank
   static generateAccountData(rankType: string) {
-    // Use safe generic strings for account generation as well to avoid real names.
+    // Use random strings so we do not use real names
     const prefixName = 'MemberQA';
     const randomFirstName = faker.string.alpha(6);
     const randomLastName = faker.string.alpha(8);
@@ -44,7 +44,7 @@ export default class DataHelper {
 
     return {
       email: `${prefixName}${randomFirstName}${randomNumber}@mailinator.com`.toLowerCase(),
-      // Static password requested in the spreadsheet
+      // Same static password for all test accounts
       password: 'Tester@123',
       username: `${prefixName} ${randomFirstName} ${randomLastName}`,
       isPremium: isPremium,
@@ -62,11 +62,11 @@ export default class DataHelper {
 
   // Method to get rules for each plan (like max guests or max stay)
   static getPlanConstraints(planName: string) {
-    // Added +1 days buffer
+    // +1 day buffer so check-in is never today
     const safeDate = new Date();
     safeDate.setDate(safeDate.getDate() + 1);
 
-    // Narrowed booking window to 89 days
+    // Booking window is 89 days because the app limit is 90
     const checkInDate = faker.date.soon({ days: 89, refDate: safeDate });
 
     // Format the date
@@ -74,7 +74,7 @@ export default class DataHelper {
     const day = String(checkInDate.getDate()).padStart(2, '0');
     const year = checkInDate.getFullYear();
 
-    // Reverted back to MM/DD/YYYY for the Reservation Page!
+    // Note: Reservation Page uses MM/DD/YYYY, not YYYY-MM-DD
     const formattedDate = `${month}/${day}/${year}`;
 
     // Set default limits for normal plans
@@ -82,7 +82,7 @@ export default class DataHelper {
     let minGuest = 1;
     let maxGuest = 9;
 
-    // Replaced multiple if statements with a switch-case for better readability and performance
+    // Plan rules from the app
     switch (planName) {
       case 'Premium plan':
         minGuest = 2;
