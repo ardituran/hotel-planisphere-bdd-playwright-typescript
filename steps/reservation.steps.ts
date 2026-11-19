@@ -1,4 +1,5 @@
 import { createBdd } from 'playwright-bdd';
+import { expect } from '@playwright/test';
 import HotelReservePage from '../pages/HotelReservePage';
 import DataHelper from '../utils/DataHelper';
 // Import AccountPage to handle login state within reservation tests
@@ -87,4 +88,31 @@ When('I submit the reservation form', async () => {
 
 Then('I should see the reservation success message', async () => {
   await reservePage.verifySuccess();
+});
+
+// --- NEGATIVE STEPS ---
+
+When(
+  'I fill the reservation form with {string} guests which is over the plan limit',
+  async ({ page }, guests: string) => {
+    reservePage = new HotelReservePage(page);
+    await reservePage.fillGuestsCount(guests);
+  }
+);
+
+When(
+  'I fill the reservation form with {string} nights which is over the plan limit',
+  async ({ page }, nights: string) => {
+    reservePage = new HotelReservePage(page);
+    await reservePage.fillStayNights(nights);
+  }
+);
+
+Then('I should see the error message {string}', async ({ page }, message: string) => {
+  reservePage = new HotelReservePage(page);
+  await reservePage.verifyValidationError(message);
+});
+
+Then('I should not reach the confirmation page', async ({ page }) => {
+  await expect(page).not.toHaveURL(/confirm/);
 });
