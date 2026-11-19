@@ -34,7 +34,7 @@ All tests run on Chromium for now. I want to add Firefox later.
 - **TypeScript** - I am still learning types. Sometimes I use `any`.
 - **playwright-bdd (Gherkin)** - because I come from manual testing, Gherkin feels familiar to me, like writing test cases.
 - **Faker** - to generate test data. I use the Indonesian locale.
-- **Allure** - to make a test report.
+- **Allure** - to make a test report. The latest report is published on [GitHub Pages](https://ardituran.github.io/hotel-planisphere-bdd-playwright-typescript/).
 - **GitHub Actions** - to run tests automatically every Monday at 09:00 WIB, or manually from the Actions tab.
 - **Telegram** - to get a notification after the run finishes.
 
@@ -95,6 +95,7 @@ This is the order I follow for every new task:
 
 - [Learning notes](docs/learning-notes.md) - what I learned, my mistakes, and my study plan. I wrote this in Indonesian because it is my personal notebook.
 - [Manual test cases](docs/manual-test-cases.md) - my manual test cases and where each one is automated.
+- [Planning roadmap](planning/roadmap.md) - what is done and what I plan to do next in this repo.
 
 ## What is still hard for me
 
