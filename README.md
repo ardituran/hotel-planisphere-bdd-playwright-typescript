@@ -11,6 +11,7 @@ This repository is my practice project and also my portfolio. It is not perfect,
 - QA Manual since 2014. More than 10 years of manual testing.
 - Learning test automation since 2024.
 - Still not fluent with code, but I try to learn every day.
+- [My resume](https://github.com/ardituran/idris-ardi-resume) - my resume in Markdown and PDF. Every version is kept in git.
 
 ## Why this project
 
@@ -121,6 +122,8 @@ I list this here so I remember what to improve:
 
 ## Author
 
-**Idris Ardi** (ardituran)
+**Idris Ardi** ([ardituran](https://github.com/ardituran))
 
 QA Manual since 2014. Learning test automation since 2024.
+
+- [LinkedIn](https://www.linkedin.com/in/idrisardi)
