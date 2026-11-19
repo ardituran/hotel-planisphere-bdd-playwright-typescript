@@ -132,6 +132,26 @@ export default class HotelReservePage {
     await this.submitBtn.click();
   }
 
+  // --- NEGATIVE ACTIONS ---
+
+  // Fill guests with a value over the plan limit (for negative test)
+  async fillGuestsCount(guests: string) {
+    await this.guestsInput.fill(guests);
+    // Press Tab so the change event runs and the app shows its validation message
+    await this.guestsInput.press('Tab');
+  }
+
+  // Fill stay nights with a value over the plan limit (for negative test)
+  async fillStayNights(nights: string) {
+    await this.stayInput.fill(nights);
+    await this.stayInput.press('Tab');
+  }
+
+  async verifyValidationError(message: string) {
+    const errorText = this.page.locator('.invalid-feedback', { hasText: message });
+    await expect(errorText.first()).toBeVisible();
+  }
+
   async verifySuccess() {
     // Check if the success modal appears
     await expect(this.successModalTitle).toBeVisible();

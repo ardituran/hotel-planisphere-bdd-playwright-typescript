@@ -84,7 +84,7 @@ Status: Automated in `features/reservation.feature`, Premium member outline. I u
 | 1 | Open the Login page | Login form is displayed |
 | 2 | Fill correct email and wrong password, click Login | Error message is shown, user stays on Login page |
 
-Status: Not automated yet. This is planned for the next phase. As a manual tester I know negative cases are important, and I am still learning how to write them in code.
+Status: Automated in `features/auth.feature`, scenario "Existing User: Login with a wrong password shows an error".
 
 ## Mapping: manual test cases to automated scenarios
 
@@ -100,12 +100,12 @@ Status: Not automated yet. This is planned for the next phase. As a manual teste
 | TC-RES-03 | Normal member booking, 9 plans | `features/reservation.feature` | Automated |
 | TC-RES-04 | New member signup, booking, delete account | `features/reservation.feature` | Automated |
 | TC-RES-08 | "For honeymoon" with boundary values | `features/reservation.feature` | Automated |
-| TC-AUTH-06 | Login with wrong password | - | Planned |
-| TC-AUTH-07 | Sign up with wrong confirmation password | - | Planned |
-| TC-AUTH-08 | Sign up with invalid phone number | - | Planned |
-| TC-RES-09 | Reservation with guests over the plan limit | - | Planned |
-| TC-RES-10 | Reservation with stay over the plan limit | - | Planned |
+| TC-AUTH-06 | Login with wrong password | `features/auth.feature` | Automated |
+| TC-AUTH-07 | Sign up with wrong confirmation password | `features/auth.feature` | Automated |
+| TC-AUTH-08 | Sign up with invalid phone number | `features/auth.feature` | Automated |
+| TC-RES-09 | Reservation with guests over the plan limit | `features/reservation.feature` | Automated |
+| TC-RES-10 | Reservation with stay over the plan limit | `features/reservation.feature` | Automated |
 
-The "Planned" rows are my negative and boundary test cases. I want to automate them next.
+The negative and boundary test cases are now automated too. I started with these five simple ones. As a manual tester I know negative cases are important, and I am still learning how to write them in code.
 
 Last updated: 2026-11-19

@@ -85,3 +85,21 @@ Feature: Hotel Reservation for All User Types
       | Rank    | PlanName     |
       | Premium | Premium plan |
       | Normal  | With dinner  |
+
+  # TC-RES-09
+  @negative
+  Scenario: Guest Booking: Too many guests for "For honeymoon" shows a validation error
+    Given I am on the hotel home page
+    When I select the "For honeymoon" room plan
+    And I fill the reservation form with "3" guests which is over the plan limit
+    Then I should see the error message "Value must be less than or equal to 2."
+    And I should not reach the confirmation page
+
+  # TC-RES-10
+  @negative
+  Scenario: Guest Booking: Too many nights for "For honeymoon" shows a validation error
+    Given I am on the hotel home page
+    When I select the "For honeymoon" room plan
+    And I fill the reservation form with "3" nights which is over the plan limit
+    Then I should see the error message "Value must be less than or equal to 2."
+    And I should not reach the confirmation page

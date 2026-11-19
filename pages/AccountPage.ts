@@ -71,10 +71,11 @@ export default class AccountPage {
 
   // Disable ESLint rule for 'any' to maintain the flexible data structure
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  async fillSignupForm(accountData: any) {
+  async fillSignupForm(accountData: any, confirmPassword?: string) {
     await this.emailSignupInput.fill(accountData.email);
     await this.passwordSignupInput.fill(accountData.password);
-    await this.confirmPasswordInput.fill(accountData.password);
+    // For negative test we can pass a different confirmation password
+    await this.confirmPasswordInput.fill(confirmPassword ?? accountData.password);
     await this.usernameInput.fill(accountData.username);
 
     if (accountData.isPremium) {
@@ -144,6 +145,31 @@ export default class AccountPage {
 
   async verifyEmailOnMyPage(expectedEmail: string) {
     await expect(this.myPageEmailText).toHaveText(expectedEmail);
+  }
+
+  // --- NEGATIVE VERIFICATIONS ---
+
+  // Wrong password: the app shows the same error under email and password fields
+  async verifyLoginError() {
+    const errorText = this.page.locator('.invalid-feedback', {
+      hasText: 'Email or password is invalid.',
+    });
+    await expect(errorText.first()).toBeVisible();
+  }
+
+  async verifyPasswordMismatchError() {
+    const errorText = this.page.locator('.invalid-feedback', {
+      hasText: "Password doesn't match.",
+    });
+    await expect(errorText.first()).toBeVisible();
+  }
+
+  // Phone must match pattern [0-9]{11} on the Sign Up page
+  async verifyPhoneError() {
+    const errorText = this.page.locator('.invalid-feedback', {
+      hasText: 'Please match the requested format.',
+    });
+    await expect(errorText.first()).toBeVisible();
   }
 
   async deleteAccount() {

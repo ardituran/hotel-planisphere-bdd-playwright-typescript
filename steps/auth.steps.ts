@@ -131,3 +131,60 @@ Then('my account should be successfully deleted', async ({ page }) => {
   // When deleted, user is sent back to index home page
   await expect(page).toHaveURL(/index/);
 });
+
+// --- NEGATIVE STEPS ---
+
+// Disable ESLint rule for empty pattern because playwright-bdd requires it as the first argument
+When(
+  'I login with a preset {string} account using a wrong password',
+  // eslint-disable-next-line no-empty-pattern
+  async ({}, rankType: string) => {
+    const email =
+      rankType === 'Premium' ? process.env.PRESET_PREMIUM_EMAIL : process.env.PRESET_NORMAL_EMAIL;
+
+    await accountPage.performLogin(email as string, 'WrongPassword123!');
+  }
+);
+
+When(
+  'I register a new {string} account with a mismatched password confirmation',
+  // eslint-disable-next-line no-empty-pattern
+  async ({}, rankType: string) => {
+    currentAccountData = DataHelper.generateAccountData(rankType);
+    // Confirmation password is made different on purpose
+    await accountPage.fillSignupForm(currentAccountData, currentAccountData.password + 'x');
+    await accountPage.submitSignup();
+  }
+);
+
+When(
+  'I register a new {string} account with an invalid phone number',
+  // eslint-disable-next-line no-empty-pattern
+  async ({}, rankType: string) => {
+    currentAccountData = DataHelper.generateAccountData(rankType);
+    // Letters do not match the phone pattern [0-9]{11}
+    currentAccountData.phone = 'abc123';
+    await accountPage.fillSignupForm(currentAccountData);
+    await accountPage.submitSignup();
+  }
+);
+
+Then('I should see the login error message', async () => {
+  await accountPage.verifyLoginError();
+});
+
+Then('I should see the password mismatch error message', async () => {
+  await accountPage.verifyPasswordMismatchError();
+});
+
+Then('I should see the invalid phone error message', async () => {
+  await accountPage.verifyPhoneError();
+});
+
+Then('I should stay on the Login page', async ({ page }) => {
+  await expect(page).toHaveURL(/login/);
+});
+
+Then('I should stay on the Sign Up page', async ({ page }) => {
+  await expect(page).toHaveURL(/signup/);
+});

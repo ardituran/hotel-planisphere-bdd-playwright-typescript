@@ -111,11 +111,11 @@ I list this here so I remember what to improve:
 - Some methods use `any` type.
 - Step files use global variables to share data between steps.
 - `test:focus` script is not finished yet.
-- I only test happy path for now. Negative test cases are my next step.
+- My negative test cases are still simple. I only have 5 for now, and I want to add more.
 
 ## My plan to learn next
 
-- Add negative test cases, like login with wrong password and form validation.
+- Add more negative and boundary test cases. I started with 5 simple ones.
 - Try API testing.
 - Learn more about fixtures and better test data.
 
