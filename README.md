@@ -1,269 +1,120 @@
-# Hotel Planisphere Automation Guide
+# Hotel Planisphere - BDD Test Automation
 
-Onboarding guide for junior QA engineers.
+![Playwright E2E Tests](https://github.com/ardituran/hotel-planisphere-bdd-playwright-typescript/actions/workflows/playwright.yml/badge.svg)
 
-This guide explains how to work with the automation framework using Playwright, TypeScript, and BDD. It also covers coding rules, Git rules, and debugging steps.
+Hello, my name is **Idris Ardi**. I am a QA Manual. I have worked in software testing since 2014, and I started to learn test automation in 2024.
 
-## Purpose
+This repository is my practice project and also my portfolio. It is not perfect, and I know it. I keep it as it is so I can see my own progress.
 
-This guide is written for junior Software QA engineers.
+## About me
 
-The goal is to help you understand the framework, write clean test scripts, and keep the project easy to maintain.
+- QA Manual since 2014. More than 10 years of manual testing.
+- Learning test automation since 2024.
+- Still not fluent with code, but I try to learn every day.
 
-## Manual Testing First
+## Why this project
 
-Always run the test case manually before writing automation.
+Hotel Planisphere is a free demo hotel booking site: https://hotel-example-site.takeyaqa.dev/en-US/
 
-This helps you understand the feature flow, business rules, validation, and expected results. If you do not understand the feature manually, the automation script may test the wrong thing.
+I chose it because it has real flows to test. Sign up, login, account management, and hotel reservation with different membership levels. For me it feels like testing a real feature at work.
 
-## Workflow
+## What I test
 
-Follow this order when you create a new automation task.
+| Feature | What is covered |
+| --- | --- |
+| Authentication | Register Premium and Normal account, login, logout, delete account |
+| Reservation | Guest booking, Premium member booking, Normal member booking, new member booking |
+| Data | Random test data with Faker, and plan rules like max stay and max guests |
 
-### 1. Write the feature file
+All tests run on Chromium for now. I want to add Firefox later.
 
-Create a new file in the `features` folder.
+## Tools I use
 
-Write the scenario in simple Gherkin format using `Given`, `When`, and `Then`.
+- **Playwright** - to control the browser. The documentation is easy to follow.
+- **TypeScript** - I am still learning types. Sometimes I use `any`.
+- **playwright-bdd (Gherkin)** - because I come from manual testing, Gherkin feels familiar to me, like writing test cases.
+- **Faker** - to generate test data. I use the Indonesian locale.
+- **Allure** - to make a test report.
+- **GitHub Actions** - to run tests automatically every day at 08:00 WIB.
+- **Telegram** - to get a notification after the run finishes.
 
-### 2. Create the page object
-
-Create a page file in the `pages` folder.
-
-Store UI locators and reusable actions in this file.
-
-### 3. Create the step definitions
-
-Create a file in the `steps` folder.
-
-This file connects the Gherkin text to the page object methods.
-
-### 4. Run and validate locally
-
-Run the test on your own machine first.
-
-Fix the problem until the scenario passes correctly.
-
-## Example
-
-This example shows a simple login flow using a preset premium account.
-
-### Feature file example
-
-```gherkin
-Feature: Member Authentication
-  As a registered user of Hotel Planisphere
-  I want to login with my credentials
-  In order to book dynamic hotel packages
-
-  @auth @smoke
-  Scenario: Successful login with valid preset premium account
-    Given The user navigates to the Hotel Planisphere home page
-    When The user submits valid premium credentials
-    Then The user should be redirected to the My Page dashboard
-    And The dashboard should display the correct membership status
-```
-
-### Page object example
-
-```ts
-import { Page, Locator } from '@playwright/test';
-
-export class LoginPage {
-  private readonly page: Page;
-  private readonly emailInput: Locator;
-  private readonly passwordInput: Locator;
-  private readonly submitButton: Locator;
-
-  constructor(page: Page) {
-    this.page = page;
-    this.emailInput = page.locator('#email');
-    this.passwordInput = page.locator('#password');
-    this.submitButton = page.locator('#login-button');
-  }
-
-  async navigate(): Promise<void> {
-    await this.page.goto('/en-US/login.html');
-  }
-
-  async login(email: string, pass: string): Promise<void> {
-    await this.emailInput.fill(email);
-    await this.passwordInput.fill(pass);
-    await this.submitButton.click();
-  }
-}
-```
-
-### Step definition example
-
-```ts
-import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import { DashboardPage } from '../pages/DashboardPage';
-
-Given('The user navigates to the Hotel Planisphere home page', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  await loginPage.navigate();
-});
-
-// eslint-disable-next-line no-empty-pattern
-When('The user submits valid premium credentials', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const email = process.env.PRESET_PREMIUM_EMAIL || '';
-  const password = process.env.PRESET_PREMIUM_PASSWORD || '';
-
-  await loginPage.login(email, password);
-});
-
-Then('The user should be redirected to the My Page dashboard', async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await expect(dashboardPage.headerTitle).toBeVisible();
-});
-```
-
-## Coding Rules
-
-Follow these rules to keep the code clean.
-
-### File naming
-
-- Use PascalCase for page object files, such as `LoginPage.ts` or `HotelReservePage.ts`.
-- Use lowercase dot format for step files, such as `auth.steps.ts` or `reservation.steps.ts`.
-
-### Locator strategy
-
-Use stable selectors first.
-
-Good examples:
-
-```ts
-page.locator('#email')
-page.getByRole('button', { name: 'Submit' })
-```
-
-Avoid long XPath selectors because they break easily when the UI changes.
-
-### Use await
-
-Most Playwright actions are asynchronous.
-
-Always use `await` for page actions and assertions.
-
-### Run format and lint
-
-Before you commit or push, run these commands:
+## How to run
 
 ```bash
-npm run format
-npm run lint
+git clone https://github.com/ardituran/hotel-planisphere-bdd-playwright-typescript.git
+cd hotel-planisphere-bdd-playwright-typescript
+npm install
+npx playwright install
+
+# prepare your account data
+cp .env.template .env
+# then edit .env and fill the preset email and password
+
+npm run test
 ```
 
-These commands help keep the code style consistent and catch common issues early.
-
-## Git Rules
-
-This project uses a protected `main` branch.
-
-Do not commit or push directly to `main`. Always use a separate branch.
-
-### Branch naming
-
-Use this format:
+Other commands I use:
 
 ```bash
-github-username/type/short-description
+npm run test:headed   # run with browser window visible
+npm run test:ui       # run with Playwright UI mode
+npm run report        # open Allure report
+npm run format        # format the code
+npm run lint          # check the code
 ```
 
-**Branch types:**
+## Folder structure
 
-- `feat` - New features or test scenarios
-- `fix` - Bug fixes and issue resolution
-- `chore` - Maintenance tasks, dependency updates
-- `docs` - Documentation updates and improvements
-- `refactor` - Code cleanup, restructuring without feature changes
-- `test` - Test-related changes, test improvements, or test fixes
+- `features/` - Gherkin scenarios. I write the test case here first.
+- `steps/` - the code behind each Gherkin step.
+- `pages/` - page objects. Locators and actions for each page.
+- `utils/` - `DataHelper.ts` for test data and plan rules.
+- `.github/workflows/` - CI setup for GitHub Actions.
 
-**Examples:**
+## My workflow
 
-- `yourname/feat/premium-booking-flow`
-- `yourname/fix/date-validation-error`
-- `yourname/chore/update-playwright-version`
-- `yourname/docs/api-testing-guide`
-- `yourname/refactor/cleanup-page-objects`
-- `yourname/test/add-smoke-test-suite`
+This is the order I follow for every new task:
 
-### Commit message style
+1. I test the flow manually first. If I do not understand it manually, I cannot automate it.
+2. I write the scenario in the feature file.
+3. I create or update the page object.
+4. I write the step definitions.
+5. I run it locally until it passes.
 
-Use clear and descriptive commit prefixes that match your branch type:
+## What I have learned so far
 
-- `feat:` - New features, test scenarios, or functionality additions
-- `fix:` - Bug fixes, issue resolution, or error corrections
-- `chore:` - Maintenance tasks, dependency updates, or build improvements
-- `docs:` - Documentation updates, README changes, or guide improvements
-- `refactor:` - Code cleanup, restructuring, or performance improvements
-- `test:` - Test additions, test fixes, or testing framework updates
+- Manual testing first is really important. Automation just repeats what I already understand.
+- Gherkin is close to manual test cases, so the step from manual to automation is not too scary.
+- Stable locators save a lot of time. Long XPath breaks easily.
+- `await` is easy to forget, and the error message is confusing at first.
+- CI is not scary. GitHub Actions can run my tests while I sleep.
+- The Trace Viewer helps a lot when a test fails.
 
-**Examples:**
+## What is still hard for me
 
-- `feat: add premium member reservation flow`
-- `fix: resolve date picker validation error`
-- `chore: update Playwright to version 1.40`
-- `docs: improve API testing guide with examples`
-- `refactor: simplify login page object methods`
-- `test: add smoke tests for booking scenarios`
+- `async` and `await`. I understand the idea, but I still make mistakes.
+- TypeScript types. I use `any` too much and I want to fix it slowly.
+- Deciding how big a page object should be.
+- Test data. Random data is useful, but sometimes it makes a test fail and I do not know why.
 
-**Guidelines:**
+## I know this is not clean yet
 
-- Keep the message concise but descriptive
-- Use lowercase after the colon
-- Avoid ending with a period
-- Focus on what the commit accomplishes
+I list this here so I remember what to improve:
 
-Before opening a pull request, make sure your tests pass and your files are formatted.
+- URL is hardcoded in several files instead of using `baseURL` in the config.
+- Some methods use `any` type.
+- Step files use global variables to share data between steps.
+- `test:focus` script is not finished yet.
+- I only test happy path for now. Negative test cases are my next step.
 
-## Debugging
+## My plan to learn next
 
-Test failures are normal.
-
-Use this order to debug faster:
-
-1. Focus on one scenario.
-2. Use Trace Viewer.
-3. Check test data rules.
-
-### Focus on one scenario
-
-When a test fails, do not run the full suite first.
-
-Add `@focus` to the failing scenario and run only that test.
-
-### Use Trace Viewer
-
-If a test fails in GitHub Actions, download the trace artifact and inspect it with Playwright Trace Viewer.
-
-```bash
-npx playwright show-trace path/to/downloaded-trace.zip
-```
-
-This helps you see what happened in the browser step by step.
-
-### Check test data rules
-
-Some failures happen because the test data does not match the app rules.
-
-For example, Hotel Planisphere has a 90-day booking limit. If the app shows validation errors, check the data generated in `DataHelper.ts`.
-
-## Final Notes
-
-Good automation is not only about making the test pass.
-
-It is also about understanding the feature, writing clear steps, using stable locators, and keeping the test easy for others to read and maintain.
-
-Start small, stay consistent, and improve step by step.
+- Add negative test cases, like login with wrong password and form validation.
+- Try API testing.
+- Learn more about fixtures and better test data.
 
 ## Author
 
-ardituran
+**Idris Ardi** (ardituran)
 
-Software Quality Assurance Engineer
+QA Manual since 2014. Learning test automation since 2024.
