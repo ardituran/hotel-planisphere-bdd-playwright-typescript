@@ -70,6 +70,15 @@ jobs:
         path: playwright-report/
         retention-days: 7
 
+    # Allure results are used by the build-report job below
+    - name: Upload Allure Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results
+        path: allure-results/
+        retention-days: 7
+
     - name: Send Telegram Notification
       if: always()
       # Pinned to a release version so the action does not change unexpectedly
@@ -88,3 +97,52 @@ jobs:
           Click the link below to view the GitHub Actions run and download the generated report artifact (ZIP).
           
           🔗 [View GitHub Actions Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+  # Build the Allure report from the test results
+  build-report:
+    needs: test
+    # Build the report even when some tests fail, so the report still shows them
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Allure Results
+      uses: actions/download-artifact@v4
+      with:
+        name: allure-results
+        path: allure-results
+
+    # The Allure command line needs Java
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Generate Allure Report
+      run: |
+        npm install --no-save allure-commandline
+        npx allure generate allure-results --clean -o allure-report
+
+    - name: Upload Pages Artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: allure-report
+
+  # Publish the Allure report to GitHub Pages (skip pull requests)
+  deploy-report:
+    needs: build-report
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: false
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
