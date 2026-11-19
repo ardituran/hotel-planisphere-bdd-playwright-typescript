@@ -69,6 +69,7 @@ npm run lint          # check the code
 - `steps/` - the code behind each Gherkin step.
 - `pages/` - page objects. Locators and actions for each page.
 - `utils/` - `DataHelper.ts` for test data and plan rules.
+- `docs/` - my learning notes and my manual test cases.
 - `.github/workflows/` - CI setup for GitHub Actions.
 
 ## My workflow
@@ -89,6 +90,11 @@ This is the order I follow for every new task:
 - `await` is easy to forget, and the error message is confusing at first.
 - CI is not scary. GitHub Actions can run my tests while I sleep.
 - The Trace Viewer helps a lot when a test fails.
+
+## My notes and test cases
+
+- [Learning notes](docs/learning-notes.md) - what I learned, my mistakes, and my study plan. I wrote this in Indonesian because it is my personal notebook.
+- [Manual test cases](docs/manual-test-cases.md) - my manual test cases and where each one is automated.
 
 ## What is still hard for me
 
