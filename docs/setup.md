@@ -178,6 +178,7 @@ npm run report
 | Pesan error | Artinya | Yang dilakukan |
 | --- | --- | --- |
 | `Cannot find module` | `npm install` belum selesai atau folder `node_modules` hilang | Jalankan `npm install` lagi |
+| `sh: prettier: not found` atau `eslint: not found` | Perintah dijalankan sebelum `npm install`. Format dan lint butuh paket yang ada di `node_modules` | Jalankan `npm install` dulu, baru `npm run format` atau `npm run lint` |
 | `Executable doesn't exist` | Browser belum terpasang | Jalankan `npx playwright install` |
 | Error di langkah login | `.env` belum ada, isinya masih contoh, atau namanya jadi `.env.txt` | Periksa Langkah 3 |
 | `not recognized` atau `command not found` | Node.js atau Git belum terpasang | Pasang, lalu buka ulang VS Code |
