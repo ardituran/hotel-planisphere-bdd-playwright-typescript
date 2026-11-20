@@ -80,7 +80,7 @@ npm run lint          # check the code
 - `steps/` - the code behind each Gherkin step.
 - `pages/` - page objects. Locators and actions for each page.
 - `utils/` - `DataHelper.ts` for test data and plan rules.
-- `docs/` - my learning notes and my manual test cases.
+- `docs/` - setup guide, learning notes, manual test cases, and git rules.
 - `.github/workflows/` - CI setup for GitHub Actions.
 
 ## My workflow
@@ -106,6 +106,7 @@ This is the order I follow for every new task:
 
 - [Learning notes](docs/learning-notes.md) - what I learned, my mistakes, and my study plan. I wrote this in Indonesian because it is my personal notebook.
 - [Manual test cases](docs/manual-test-cases.md) - my manual test cases and where each one is automated.
+- [Git rules](docs/git-rules.md) - branch naming, commit message style, and what I run before a pull request.
 - [Planning roadmap](planning/roadmap.md) - what is done and what I plan to do next in this repo.
 
 ## What is still hard for me
