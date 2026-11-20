@@ -2,15 +2,17 @@
 
 ![Playwright E2E Tests](https://github.com/ardituran/hotel-planisphere-bdd-playwright-typescript/actions/workflows/playwright.yml/badge.svg)
 
-Hello, my name is **Idris Ardi**. I am a QA Manual. I have worked in software testing since 2014, and I started to learn test automation in 2024.
+Hello, my name is **Idris Ardi**, a QA Engineer. This repository is my practice project and also my portfolio.
 
-This repository is my practice project and also my portfolio. It is not perfect, and I know it. I keep it as it is so I can see my own progress.
+I keep it close to the way I actually work, including the parts that are still rough, so the progress stays visible from one commit to the next.
 
 ## About me
 
-- QA Manual since 2014. More than 10 years of manual testing.
-- Learning test automation since 2024.
-- Still not fluent with code, but I try to learn every day.
+- 10+ years in manual and exploratory testing, working in Agile teams with developers, product managers, and business stakeholders.
+- Industries so far: government technology, procurement, education technology, fintech, e-commerce, SaaS, and telecom.
+- Currently a Quality Engineer (middle level) on GovTech Procurement, Project LKPP, through PT Infomedia Nusantara.
+- What I am used to doing: finding edge cases, keeping regression coverage, writing defect reports with clear reproduction steps, and facilitating User Acceptance Testing on web and mobile.
+- Tools I work with: JIRA, Xray, Postman, SQL with DBeaver, Browser DevTools. Automation exposure with Playwright, Maestro, and Gherkin since 2024.
 - [My resume](https://github.com/ardituran/idris-ardi-resume) - my resume in Markdown and PDF. Every version is kept in git.
 
 ## Why this project
@@ -41,6 +43,10 @@ All tests run on Chromium for now. I want to add Firefox later.
 
 ## How to run
 
+New to automation, or setting this up for the first time? Read [Setup docs](docs/setup.md) first. It is written in Indonesian and covers Windows and Mac, where to get the test accounts, and the errors that show up most often.
+
+Prefer the short version:
+
 ```bash
 git clone https://github.com/ardituran/hotel-planisphere-bdd-playwright-typescript.git
 cd hotel-planisphere-bdd-playwright-typescript
@@ -48,11 +54,15 @@ npm install
 npx playwright install
 
 # prepare your account data
-cp .env.template .env
+# .env.template is already in this repo, you only create the copy below
+cp .env.template .env     # Windows: copy .env.template .env
 # then edit .env and fill the preset email and password
+# the accounts are listed at the bottom of the demo site, in the Preset users table
 
 npm run test
 ```
+
+`npm test` runs `bddgen` before Playwright. File in `steps/` cannot be run on its own, and `npx playwright test` alone will not work either. See [Setup docs](docs/setup.md#kenapa-npm-test-bukan-npx-playwright-test) for the reason.
 
 Other commands I use:
 
@@ -123,7 +133,5 @@ I list this here so I remember what to improve:
 ## Author
 
 **Idris Ardi** ([ardituran](https://github.com/ardituran))
-
-QA Manual since 2014. Learning test automation since 2024.
 
 - [LinkedIn](https://www.linkedin.com/in/idrisardi)
